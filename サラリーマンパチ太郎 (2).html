@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>サラリーマンパチ太郎</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#0d0e16; --panel:#171825; --panel-alt:#1f2233; --border:#2a2d42;
+    --gold:#e3b64f; --red:#ff4d5e; --green:#3ddc84; --text:#f2efe6; --muted:#8d90a6;
+    box-sizing:border-box;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  html{scroll-padding-top:env(safe-area-inset-top,0px); height:100%;}
+  *{box-sizing:border-box;}
+  body{
+    margin:0; height:100%; background:var(--bg); color:var(--text);
+    font-family:'Noto Sans JP',sans-serif; -webkit-font-smoothing:antialiased;
+  }
+  .orb{font-family:'Orbitron',monospace;}
+  .zkgn{font-family:'Zen Kaku Gothic New',sans-serif;}
+  #app{padding-bottom:84px; max-width:520px; margin:0 auto;}
+  header{padding:22px 16px 10px;}
+  header h1{font-weight:900; font-size:1.4rem; margin:0;}
+  header h1 .gold{color:var(--gold);}
+  header .sub{font-size:0.7rem; color:var(--muted); margin-left:8px;}
+  main{padding:0 16px;}
+  .section{background:var(--panel); border:1px solid var(--border); border-radius:16px; padding:16px 16px 18px; margin-bottom:14px;}
+  .section-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; gap:8px;}
+  .section-title{font-weight:900; font-size:0.95rem; color:var(--gold); margin:0; letter-spacing:0.04em;}
+  .field{display:block; margin-bottom:12px;}
+  .field-label{display:block; font-size:0.72rem; color:var(--muted); margin-bottom:5px;}
+  .inp, select{
+    width:100%; background:var(--panel-alt); border:1px solid var(--border); border-radius:10px;
+    padding:10px 12px; color:var(--text); font-size:0.95rem; font-family:'Noto Sans JP',sans-serif; outline:none;
+  }
+  .btn{
+    background:var(--gold); color:#111225; border:none; border-radius:10px; padding:11px 16px;
+    font-weight:700; font-size:0.88rem; font-family:'Zen Kaku Gothic New',sans-serif; cursor:pointer;
+    display:inline-flex; align-items:center; justify-content:center; gap:6px;
+  }
+  .btn.full{width:100%;}
+  .btn.ghost{background:transparent; border:1px solid var(--border); color:var(--muted);}
+  .btn.icon{background:var(--panel-alt); border:1px solid var(--border); color:var(--muted); padding:8px 10px;}
+  .row{display:flex; justify-content:space-between; align-items:center; padding:8px 2px; border-top:1px solid var(--border);}
+  .row:first-child{border-top:none;}
+  .muted{color:var(--muted);}
+  .empty{text-align:center; padding:22px 8px; color:var(--muted); font-size:0.85rem;}
+  .led{font-family:'Orbitron',monospace; font-weight:900; text-shadow:0 0 12px currentColor;}
+  .iconbtn{background:none; border:none; color:var(--muted); cursor:pointer; padding:4px;}
+  nav{
+    position:fixed; bottom:0; left:0; right:0; background:rgba(23,24,37,0.96); border-top:1px solid var(--border);
+    display:flex; justify-content:space-around; padding:8px 4px calc(8px + env(safe-area-inset-bottom)); backdrop-filter:blur(8px);
+    max-width:520px; margin:0 auto;
+  }
+  nav button{background:none; border:none; display:flex; flex-direction:column; align-items:center; gap:3px; color:var(--muted); cursor:pointer; padding:4px 10px;}
+  nav button.active{color:var(--gold);}
+  nav .ic{font-size:1.15rem;}
+  nav .lbl{font-size:0.62rem; font-weight:700; font-family:'Zen Kaku Gothic New',sans-serif;}
+  .hero{background:radial-gradient(circle at 30% 20%, var(--panel-alt), var(--panel)); border:1px solid var(--border); border-radius:18px; padding:22px 18px; margin-top:12px; margin-bottom:14px; text-align:center;}
+  .hero .cap{font-size:0.72rem; color:var(--muted); margin-bottom:6px; letter-spacing:0.08em;}
+  .statgrid{display:flex; justify-content:center; gap:18px; flex-wrap:wrap; margin-top:14px;}
+  .statgrid .cap{font-size:0.65rem; color:var(--muted);}
+  .statline{margin-top:14px; padding-top:12px; border-top:1px solid var(--border); display:flex; justify-content:center; gap:28px;}
+
+  .pair{display:flex; justify-content:center; gap:28px; margin-top:12px;}
+  .pair .cap{font-size:0.65rem; color:var(--muted); margin-bottom:2px;}
+  .statcells{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:14px;}
+  .statcells .cell{background:var(--panel-alt); border:1px solid var(--border); border-radius:10px; padding:8px 6px;}
+  .statcells .cap{font-size:0.62rem; color:var(--muted); margin-bottom:2px;}
+  .statcells .v{font-weight:700; font-size:0.95rem;}
+  .hamari{margin-top:12px; padding-top:12px; border-top:1px solid var(--border);}
+  .hamari .cap{font-size:0.65rem; color:var(--muted);}
+  .mrow{padding:10px 2px; border-top:1px solid var(--border);}
+  .mrow:first-of-type{border-top:none;}
+  .mtop{display:flex; justify-content:space-between; align-items:center; gap:8px;}
+  .mname{font-size:0.85rem; font-weight:700;}
+  .msub{font-size:0.68rem; color:var(--muted); margin-top:2px;}
+  .chips{display:flex; flex-wrap:wrap; gap:5px; margin-top:6px;}
+  .chip{font-size:0.66rem; padding:2px 8px; border-radius:999px; background:var(--panel-alt); border:1px solid var(--border); color:var(--text);}
+  .chip.gold{color:var(--gold); border-color:#5a4a20;}
+  .chip.hot{color:#111225; background:var(--gold); border-color:var(--gold); font-weight:700;}
+  .calnav{display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;}
+  .calnav button{background:none; border:none; color:var(--muted); cursor:pointer; font-size:1.1rem;}
+  .calmonth{font-weight:900; font-size:0.9rem;}
+  .caltotals{display:flex; justify-content:center; gap:22px; margin-bottom:10px; padding:8px 0; background:var(--panel-alt); border-radius:10px; border:1px solid var(--border);}
+  .calgrid{display:grid; grid-template-columns:repeat(7,1fr); gap:3px;}
+  .calgrid .wd{text-align:center; font-size:0.62rem; color:var(--muted); margin-bottom:4px;}
+  .calcell{background:var(--panel-alt); border:1px solid var(--border); border-radius:8px; padding:6px 2px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:2px; min-height:42px;}
+  .calcell .d{font-size:0.68rem;}
+  .calcell .p{font-size:0.56rem; font-weight:700; font-family:'Orbitron',monospace;}
+  .calcell.selected{background:var(--gold);}
+  .calcell.pos{background:#1c3a2c;}
+  .calcell.neg{background:#3a1c22;}
+  .daytotal{margin-top:10px; text-align:center;}
+  .chartwrap{position:relative;}
+  .chartbox{height:210px;}
+  .chartbox.expanded{position:fixed; inset:0; height:100vh; width:100vw; max-width:none; background:var(--bg); z-index:1000; padding:20px 12px; margin:0;}
+  .expandbtn{position:absolute; top:-6px; right:-2px; background:var(--panel-alt); border:1px solid var(--border); color:var(--muted); border-radius:8px; padding:4px 8px; cursor:pointer; font-size:0.9rem;}
+  .legend{display:flex; gap:14px; justify-content:center; font-size:0.68rem; margin-bottom:6px;}
+  .legend span{display:inline-flex; align-items:center; gap:4px;}
+  .dot{width:8px; height:8px; border-radius:50%; display:inline-block;}
+  .calcdisp{background:var(--panel-alt); border:1px solid var(--border); border-radius:10px; padding:14px 12px; text-align:right; margin-bottom:10px; font-family:'Orbitron',monospace; font-size:1.6rem; font-weight:700; overflow-x:auto;}
+  .calckeys{display:grid; grid-template-columns:repeat(4,1fr); gap:8px;}
+  .calckey{background:#262a3d; border:1px solid var(--border); border-radius:10px; padding:14px 0; color:var(--text); font-size:1.1rem; font-weight:700; cursor:pointer;}
+  .calckey.accent{background:var(--panel-alt); color:var(--gold);}
+  .calckey.gold{background:var(--gold); color:#111225;}
+  .calckey.wide{grid-column:span 2;}
+  .hide{display:none !important;}
+  ::placeholder{color:#5c5f74;}
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <h1>サラリーマン<span class="gold">パチ太郎</span><span class="sub">共有版</span></h1>
+  </header>
+  <main id="main"></main>
+  <nav id="nav">
+    <button data-tab="home"><span class="ic">🏠</span><span class="lbl">ホーム</span></button>
+    <button data-tab="sessions"><span class="ic">💰</span><span class="lbl">収支記録</span></button>
+    <button data-tab="models"><span class="ic">🎰</span><span class="lbl">機種登録</span></button>
+    <button data-tab="stores"><span class="ic">🏪</span><span class="lbl">店舗登録</span></button>
+    <button data-tab="calc"><span class="ic">🧮</span><span class="lbl">期待値</span></button>
+  </nav>
+</div>
+
+<script>
+const RATE = 4;
+const DEFAULT_MODELS = [];
+const DEFAULT_STORES = [];
+function normalizeStores(list){
+  // migrates old plain-string store lists to the new object shape
+  if(!Array.isArray(list)) return DEFAULT_STORES;
+  return list.map((st,i)=> typeof st === "string"
+    ? {id:"st_m"+i, name: st, isEqual:true, exchangeRate:4, stockBalance:0}
+    : st
+  );
+}
+const DEFAULT_SESSIONS = [];
+
+const BASELINE_VERSION = "2026-10-10-v5";
+
+function computeInitialCalDate(){
+  if(DEFAULT_SESSIONS.length===0) return new Date();
+  let latest = DEFAULT_SESSIONS[0].date;
+  for(const s of DEFAULT_SESSIONS){ if(s.date > latest) latest = s.date; }
+  const d = new Date(latest+"T00:00:00");
+  return isNaN(d.getTime()) ? new Date() : d;
+}
+const initialCalDate = computeInitialCalDate();
+
+let state = {
+  tab:"home",
+  models: DEFAULT_MODELS,
+  sessions: DEFAULT_SESSIONS,
+  stores: DEFAULT_STORES,
+  loaded:false,
+  dbReady:false,
+  // sessions tab
+  viewMode:"calendar",
+  calYear: initialCalDate.getFullYear(),
+  calMonth: initialCalDate.getMonth(),
+  selectedDay:null,
+  showSessionForm:false,
+  editingSessionId:null,
+  sf:{date:new Date().toISOString().slice(0,10),store:"",modelId:"",modelName:"",cash:"",stock:"",win:"",rotations:"",payoutBalls:"",hitCount:"",kakuhenCount:"",renchanCount:"",cashAsStock:false},
+  newStoreMode:false,
+  // models tab
+  showModelForm:false,
+  editingModelId:null,
+  mf:{name:"",avgPayout:"",borderStock:"",borderCash:""},
+  // stores tab
+  showStoreForm:false,
+  editingStoreId:null,
+  stf:{name:"",isEqual:true,exchangeRate:"4",stockBalance:""},
+  // calc tab
+  calcModelId:"",
+  calcCash:"",calcStock:"",calcWin:"",calcRotations:"",calcCashAsStock:false,
+  simpleCalcShow:false, simpleDisplay:"0", simplePrev:null, simpleOp:null, simpleResetNext:false,
+  // home
+  chartExpanded:false,
+  backupShow:false, restoreText:"", restoreStage:0, restoreMsg:"",
+};
+
+let db=null, userNS=null, myId=null;
+
+function lsGet(key){
+  try{
+    const raw = localStorage.getItem("pachilog_"+key);
+    return raw ? JSON.parse(raw) : null;
+  }catch(e){ return null; }
+}
+function lsSet(key, value){
+  try{ localStorage.setItem("pachilog_"+key, JSON.stringify(value)); }catch(e){}
+}
+
+// BASELINE_VERSION is bumped every time Claude updates the embedded DEFAULT_* data.
+// On load, a cached copy is only trusted if it was built from this exact baseline;
+// otherwise the fresh embedded data wins, so updates from Claude always show up.
+async function initStorage(){
+  // 1) Try the database first — it's the cross-device source of truth once a save has happened.
+  let dbLoadedOk = false;
+  try{
+    db = await claude.use("db");
+    userNS = await claude.use("user");
+    if(userNS) myId = await userNS.id();
+  }catch(e){}
+  if(db && myId){
+    try{
+      const col = db.collection("data/users/"+myId);
+      const m = await col.doc("models").get().catch(()=>null);
+      const s = await col.doc("sessions").get().catch(()=>null);
+      const st = await col.doc("stores").get().catch(()=>null);
+      if(m && m.data && m.data.list){ state.models = m.data.list; dbLoadedOk = true; }
+      if(s && s.data && s.data.list){ state.sessions = s.data.list; dbLoadedOk = true; }
+      if(st && st.data && st.data.list){ state.stores = normalizeStores(st.data.list); dbLoadedOk = true; }
+    }catch(e){}
+  }
+
+  if(!dbLoadedOk){
+    // database unavailable (or nothing saved yet): use this browser's local copy if there is one
+    const lsModels = lsGet("models");
+    const lsSessions = lsGet("sessions");
+    const lsStores = lsGet("stores");
+    if(lsModels) state.models = lsModels;
+    if(lsSessions) state.sessions = lsSessions;
+    if(lsStores) state.stores = normalizeStores(lsStores);
+  }
+
+  // keep the local cache in sync with whatever we ended up using
+  lsSet("baselineVersion", BASELINE_VERSION);
+  lsSet("models", state.models);
+  lsSet("sessions", state.sessions);
+  lsSet("stores", state.stores);
+
+  state.loaded = true;
+  render();
+}
+
+function persist(key, list){
+  lsSet(key, list);
+  lsSet("baselineVersion", BASELINE_VERSION);
+  if(db && myId){
+    try{
+      const col = db.collection("data/users/"+myId);
+      col.doc(key).set({list}).catch(()=>{});
+    }catch(e){}
+  }
+}
+function saveModels(next){ state.models = next; persist("models", next); render(); }
+function saveSessions(next){ state.sessions = next; persist("sessions", next); render(); }
+function saveStores(next){ state.stores = next; persist("stores", next); render(); }
+
+function jpy(n){
+  const v = Math.round(n);
+  return (v<0?"-":"") + "¥" + Math.abs(v).toLocaleString("ja-JP");
+}
+function led(value, size){
+  const positive = value>=0;
+  const color = positive ? "var(--green)" : "var(--red)";
+  return `<span class="led" style="font-size:${size};color:${color}">${positive && value>0 ? "+" : ""}${jpy(value)}</span>`;
+}
+function weightedBorder(cashYen, nonCashYen, model, cashAsStock){
+  if(!model) return null;
+  if(cashAsStock) return model.borderStock;
+  const total = cashYen+nonCashYen;
+  if(total<=0) return null;
+  return (cashYen*model.borderCash + nonCashYen*model.borderStock)/total;
+}
+function enrichSession(s){
+  const storeObj = state.stores.find(st=>st.name===s.store);
+  const rate = (storeObj && storeObj.exchangeRate) ? storeObj.exchangeRate : RATE;
+  const cashYen = s.cash||0;
+  const nonCashYen = ((s.stock||0)+(s.win||0))*rate;
+  const investment = cashYen+nonCashYen;
+  const payout = (s.payoutBalls||0)*rate;
+  const profit = payout-investment;
+  const model = state.models.find(m=>m.id===s.modelId);
+  const wb = weightedBorder(cashYen, nonCashYen, model, s.cashAsStock);
+  let expectedProfit = null;
+  if(wb && s.rotations){
+    expectedProfit = (1000*s.rotations)/wb - investment;
+  }
+  return Object.assign({}, s, {investment, payout, profit, expectedProfit, modelName: model ? model.name : (s.modelName||"")});
+}
+function getEnriched(){ return state.sessions.map(enrichSession); }
+
+function render(){
+  const main = document.getElementById("main");
+  document.querySelectorAll("nav button").forEach(b=>{
+    b.classList.toggle("active", b.dataset.tab===state.tab);
+  });
+  if(!state.loaded){
+    main.innerHTML = `<div style="text-align:center;padding:60px 0;color:var(--muted)">読み込み中...</div>`;
+    return;
+  }
+  if(state.tab==="home") main.innerHTML = renderHome();
+  else if(state.tab==="sessions") main.innerHTML = renderSessions();
+  else if(state.tab==="models") main.innerHTML = renderModels();
+  else if(state.tab==="stores") main.innerHTML = renderStores();
+  else if(state.tab==="calc") main.innerHTML = renderCalc();
+  wireEvents();
+}
+
+// ---------- HOME ----------
+function renderHome(){
+  const enriched = getEnriched();
+  const totalProfit = enriched.reduce((a,s)=>a+s.profit,0);
+  const totalExpected = enriched.reduce((a,s)=>a+(s.expectedProfit||0),0);
+  const totalInvestment = enriched.reduce((a,s)=>a+s.investment,0);
+  const totalRotations = enriched.reduce((a,s)=>a+(s.rotations||0),0);
+  const totalHits = enriched.reduce((a,s)=>a+(s.hitCount||0),0);
+  const totalKakuhen = enriched.reduce((a,s)=>a+(s.kakuhenCount||0),0);
+  const totalRenchan = enriched.reduce((a,s)=>a+(s.renchanCount||0),0);
+  const diff = totalProfit-totalExpected;
+
+  const sorted = [...enriched].sort((a,b)=>new Date(a.date)-new Date(b.date));
+  let cumA=0, cumE=0;
+  const chartData = sorted.map(s=>{
+    cumA+=s.profit; cumE+=s.expectedProfit||0;
+    return {date:s.date, actual:cumA, expected:Math.round(cumE)};
+  });
+  let overallHamari = 0;
+  for(const s of sorted){
+    if((s.hitCount||0) > 0) overallHamari = 0;
+    else overallHamari += (s.rotations||0);
+  }
+
+  const monthlyMap={};
+  for(const s of enriched){
+    const key=s.date.slice(0,7);
+    if(!monthlyMap[key]) monthlyMap[key]={month:key,investment:0,payout:0,profit:0,count:0};
+    monthlyMap[key].investment+=s.investment; monthlyMap[key].payout+=s.payout; monthlyMap[key].profit+=s.profit; monthlyMap[key].count+=1;
+  }
+  const monthlyStats = Object.values(monthlyMap).sort((a,b)=>a.month<b.month?1:-1);
+
+  const modelMap={};
+  for(const s of enriched){
+    const key=s.modelName||"(未設定)";
+    if(!modelMap[key]) modelMap[key]={name:key,investment:0,payout:0,profit:0,count:0,rotations:0,hits:0,kakuhen:0,renchan:0,expected:0};
+    modelMap[key].investment+=s.investment; modelMap[key].payout+=s.payout; modelMap[key].profit+=s.profit; modelMap[key].rotations+=s.rotations||0; modelMap[key].count+=1;
+    modelMap[key].hits+=s.hitCount||0; modelMap[key].kakuhen+=s.kakuhenCount||0; modelMap[key].renchan+=s.renchanCount||0; modelMap[key].expected+=s.expectedProfit||0;
+  }
+  // hamari = rotations accumulated since the last session (by date) that had a hit, per machine
+  const sortedByDate = [...enriched].sort((a,b)=>new Date(a.date)-new Date(b.date));
+  for(const s of sortedByDate){
+    const key=s.modelName||"(未設定)";
+    if(!modelMap[key]) continue;
+    if(!("hamari" in modelMap[key])) modelMap[key].hamari = 0;
+    if((s.hitCount||0) > 0) modelMap[key].hamari = 0;
+    else modelMap[key].hamari += (s.rotations||0);
+  }
+  const modelStats = Object.values(modelMap).sort((a,b)=>b.profit-a.profit);
+
+  return `
+    ${enriched.length===0 ? `
+    <div class="section" style="margin-top:12px">
+      <h2 class="section-title" style="margin-bottom:8px">はじめに</h2>
+      <div style="font-size:0.82rem;line-height:1.8">
+        1. 「機種登録」で打つ機種(期待出玉・ボーダー)を登録<br>
+        2. 「店舗登録」でホールを登録(換金率・等価/非等価)<br>
+        3. 「収支記録」から日々の記録を入力<br>
+        <span class="muted">記録するほど、ここに収支・期待値・ハマりなどが表示されます。</span>
+      </div>
+    </div>` : ""}
+    <div class="hero">
+      <div class="cap">実際の総収支</div>
+      ${led(totalProfit,"2.6rem")}
+      <div class="pair">
+        <div><div class="cap">期待収支</div>${led(totalExpected,"1.05rem")}</div>
+        <div><div class="cap">差分</div>${led(diff,"1.05rem")}</div>
+      </div>
+      <div class="statcells">
+        <div class="cell"><div class="cap">総投資額</div><div class="orb v">${jpy(totalInvestment)}</div></div>
+        <div class="cell"><div class="cap">総回転数</div><div class="orb v">${totalRotations.toLocaleString("ja-JP")}</div></div>
+        <div class="cell"><div class="cap">総大当たり</div><div class="orb v">${totalHits.toLocaleString("ja-JP")}回</div></div>
+        <div class="cell"><div class="cap">記録数</div><div class="orb v">${enriched.length}件</div></div>
+      </div>
+      ${overallHamari > 0 ? `
+        <div class="hamari">
+          <div class="cap">🔥 全機種合算ハマり(前回の当たりから)</div>
+          <div class="orb" style="font-weight:900;font-size:1.3rem;color:var(--gold)">${overallHamari.toLocaleString("ja-JP")}回転</div>
+        </div>
+      ` : ""}
+    </div>
+
+    <div class="section">
+      <div class="section-head"><h2 class="section-title">実際 vs 期待の推移</h2></div>
+      ${chartData.length===0 ? `<div class="empty">まだ記録がありません。</div>` : `
+        <div class="chartwrap">
+          <button class="expandbtn" id="expandChartBtn">${state.chartExpanded?"✕":"⤢"}</button>
+          <div class="legend">
+            <span><span class="dot" style="background:var(--green)"></span>実際</span>
+            <span><span class="dot" style="background:var(--gold)"></span>期待</span>
+          </div>
+          <div class="chartbox ${state.chartExpanded?'expanded':''}" id="chartBox">${renderChart(chartData, state.chartExpanded)}</div>
+        </div>
+      `}
+    </div>
+
+    <div class="section">
+      <h2 class="section-title" style="margin-bottom:12px">月別収支</h2>
+      ${monthlyStats.length===0 ? `<div class="empty">まだ記録がありません。</div>` :
+        monthlyStats.map(m=>`
+          <div class="row">
+            <div>
+              <div style="font-size:0.82rem;font-weight:700">${m.month}</div>
+              <div style="font-size:0.68rem" class="muted">投資${jpy(m.investment)} → 回収${jpy(m.payout)}(記録${m.count}件)</div>
+            </div>
+            <span class="orb" style="font-weight:900;font-size:0.9rem;color:${m.profit>=0?'var(--green)':'var(--red)'}">${m.profit>=0?"+":""}${jpy(m.profit)}</span>
+          </div>
+        `).join("")}
+    </div>
+
+    <div class="section">
+      <h2 class="section-title" style="margin-bottom:12px">機種別収支</h2>
+      ${modelStats.length===0 ? `<div class="empty">まだ記録がありません。</div>` :
+        modelStats.map(m=>`
+          <div class="mrow">
+            <div class="mtop">
+              <span class="mname">${m.name}</span>
+              <span class="orb" style="font-weight:900;font-size:0.9rem;color:${m.profit>=0?'var(--green)':'var(--red)'}">${m.profit>=0?"+":""}${jpy(m.profit)}</span>
+            </div>
+            <div class="msub">投資${jpy(m.investment)} ・ ${m.rotations.toLocaleString("ja-JP")}回転 ・ ${m.count}件</div>
+            <div class="msub" style="display:flex;gap:12px;flex-wrap:wrap">
+              <span>実際 <b style="color:${m.profit>=0?'var(--green)':'var(--red)'}">${m.profit>=0?"+":""}${jpy(m.profit)}</b></span>
+              <span>期待 <b style="color:${m.expected>=0?'var(--green)':'var(--red)'}">${m.expected>=0?"+":""}${jpy(m.expected)}</b></span>
+              <span>差 <b style="color:${(m.profit-m.expected)>=0?'var(--green)':'var(--red)'}">${(m.profit-m.expected)>=0?"+":""}${jpy(m.profit-m.expected)}</b></span>
+            </div>
+            <div class="chips">
+              <span class="chip">大当たり ${m.hits}回</span>
+              <span class="chip gold">確変突入 ${m.kakuhen||0}回</span>
+              <span class="chip gold">連チャン ${m.renchan||0}回</span>
+              ${(m.hamari||0) > 0 ? `<span class="chip hot">🔥 ${m.hamari.toLocaleString("ja-JP")}回転ハマり中</span>` : ""}
+            </div>
+          </div>
+        `).join("")}
+    </div>
+    <div class="section">
+      <h2 class="section-title" style="margin-bottom:8px">データのバックアップ・引き継ぎ</h2>
+      <div class="muted" style="font-size:0.72rem;line-height:1.7;margin-bottom:10px">
+        機種変更などの前に、バックアップコードをコピーして保管しておくと、新しい端末でそのまま復元できます。
+      </div>
+      <button class="btn ghost full" id="backupToggle">${state.backupShow?"バックアップコードを閉じる":"バックアップコードを表示"}</button>
+      ${state.backupShow ? `
+        <textarea class="inp" id="backupText" readonly style="margin-top:10px;height:110px;font-size:0.7rem">${backupCode().replace(/&/g,"&amp;").replace(/</g,"&lt;")}</textarea>
+        <div class="muted" style="font-size:0.68rem;margin-top:4px">欄をタップして全選択 → コピーしてメモ等に保存してください。</div>
+      ` : ""}
+      <div style="height:14px"></div>
+      <div class="muted" style="font-size:0.72rem;margin-bottom:6px">復元:バックアップコードを貼り付けてください(今のデータは上書きされます)</div>
+      <textarea class="inp" id="restoreText" style="height:90px;font-size:0.7rem" placeholder="ここに貼り付け">${state.restoreText.replace(/&/g,"&amp;").replace(/</g,"&lt;")}</textarea>
+      <button class="btn full" id="restoreBtn" style="margin-top:8px">${state.restoreStage===1?"本当に上書きして復元する":"復元する"}</button>
+      ${state.restoreMsg ? `<div style="margin-top:8px;font-size:0.78rem;color:var(--gold)">${state.restoreMsg}</div>` : ""}
+    </div>
+  `;
+}
+
+function backupCode(){
+  return JSON.stringify({v:1, models:state.models, sessions:state.sessions, stores:state.stores});
+}
+function doRestore(){
+  let obj;
+  try{ obj = JSON.parse(state.restoreText.trim()); }catch(e){ state.restoreMsg="コードを読み取れませんでした。全体をコピーできているか確認してください。"; state.restoreStage=0; render(); return; }
+  if(!obj || !Array.isArray(obj.sessions) || !Array.isArray(obj.models)){ state.restoreMsg="バックアップコードの形式が違うようです。"; state.restoreStage=0; render(); return; }
+  if(state.restoreStage===0){ state.restoreStage=1; state.restoreMsg="今のデータが上書きされます。よければもう一度ボタンを押してください。"; render(); return; }
+  state.models = obj.models;
+  state.sessions = obj.sessions;
+  state.stores = normalizeStores(obj.stores);
+  persist("models", state.models); persist("sessions", state.sessions); persist("stores", state.stores);
+  state.restoreText=""; state.restoreStage=0; state.restoreMsg="復元しました("+state.sessions.length+"件の記録)。";
+  render();
+}
+
+function renderChart(data, expanded){
+  const w = expanded ? Math.min(window.innerWidth-24, 900) : 320;
+  const h = expanded ? window.innerHeight-160 : 190;
+  const padL=48, padR=10, padT=10, padB=24;
+  const vals = data.flatMap(d=>[d.actual,d.expected]);
+  const min = Math.min(0,...vals), max = Math.max(0,...vals);
+  const range = (max-min)||1;
+  const x = i => padL + (i/(Math.max(data.length-1,1)))*(w-padL-padR);
+  const y = v => padT + (1-(v-min)/range)*(h-padT-padB);
+  const pathFor = key => data.map((d,i)=>`${i===0?'M':'L'}${x(i).toFixed(1)},${y(d[key]).toFixed(1)}`).join(" ");
+  const zeroY = y(0);
+  const yTicks = 4;
+  let gridLines="";
+  for(let i=0;i<=yTicks;i++){
+    const v = min + (range*i/yTicks);
+    const yy = y(v);
+    gridLines += `<line x1="${padL}" y1="${yy.toFixed(1)}" x2="${w-padR}" y2="${yy.toFixed(1)}" stroke="#2a2d42" stroke-width="1" stroke-dasharray="2,3"/>`;
+    gridLines += `<text x="${padL-6}" y="${(yy+3).toFixed(1)}" font-size="9" fill="#8d90a6" text-anchor="end">${Math.round(v/1000)}k</text>`;
+  }
+  const lastIdx = data.length-1;
+  const labelStep = Math.max(1, Math.ceil(data.length/6));
+  let xLabels="";
+  data.forEach((d,i)=>{
+    if(i%labelStep===0 || i===lastIdx){
+      xLabels += `<text x="${x(i).toFixed(1)}" y="${h-6}" font-size="9" fill="#8d90a6" text-anchor="middle">${d.date.slice(5)}</text>`;
+    }
+  });
+  return `<svg viewBox="0 0 ${w} ${h}" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+    ${gridLines}
+    <line x1="${padL}" y1="${zeroY.toFixed(1)}" x2="${w-padR}" y2="${zeroY.toFixed(1)}" stroke="#8d90a6" stroke-width="1"/>
+    <path d="${pathFor('expected')}" fill="none" stroke="#e3b64f" stroke-width="2" stroke-dasharray="4,3"/>
+    <path d="${pathFor('actual')}" fill="none" stroke="#3ddc84" stroke-width="2"/>
+    ${xLabels}
+  </svg>`;
+}
+
+// ---------- SESSIONS ----------
+function dayTotalsMap(enriched){
+  const map={};
+  for(const s of enriched){
+    if(!map[s.date]) map[s.date]={profit:0,expected:0,count:0,investment:0,payout:0,rotations:0,hits:0};
+    map[s.date].profit+=s.profit; map[s.date].expected+=s.expectedProfit||0; map[s.date].count+=1;
+    map[s.date].investment+=s.investment; map[s.date].payout+=s.payout;
+    map[s.date].rotations+=(s.rotations||0); map[s.date].hits+=(s.hitCount||0);
+  }
+  return map;
+}
+function renderSessions(){
+  const enriched = getEnriched();
+  const sorted = [...enriched].sort((a,b)=>new Date(b.date)-new Date(a.date));
+  const dayTotals = dayTotalsMap(enriched);
+  const displayList = (state.viewMode==="calendar" && state.selectedDay) ? sorted.filter(s=>s.date===state.selectedDay) : sorted;
+
+  let formHtml="";
+  if(state.showSessionForm){
+    const sf = state.sf;
+    const modelsSorted = [...state.models].sort((a,b)=>a.borderStock-b.borderStock);
+    formHtml = `
+      <div class="field"><span class="field-label">日付</span><input class="inp" type="date" id="sf_date" value="${sf.date}"></div>
+      <div class="field"><span class="field-label">店舗(任意)</span>
+        ${state.newStoreMode ? `
+          <div style="display:flex;gap:6px">
+            <input class="inp" style="flex:1" id="sf_store_new" placeholder="新しい店舗名" value="${sf.store}">
+            <button class="btn icon" id="sf_store_back">一覧</button>
+          </div>
+        ` : `
+          <select class="inp" id="sf_store">
+            <option value="">(店舗なし)</option>
+            ${state.stores.map(st=>`<option value="${st.name}" ${sf.store===st.name?"selected":""}>${st.name}</option>`).join("")}
+            <option value="__new__">+ 新しい店舗を追加</option>
+          </select>
+        `}
+      </div>
+      <div class="field"><span class="field-label">機種</span>
+        <select class="inp" id="sf_model">
+          <option value="">未登録機種(下に名前入力)</option>
+          ${modelsSorted.map(m=>`<option value="${m.id}" ${sf.modelId===m.id?"selected":""}>${m.name}</option>`).join("")}
+        </select>
+      </div>
+      ${!sf.modelId ? `<div class="field"><span class="field-label">機種名(未登録の場合)</span><input class="inp" id="sf_modelname" value="${sf.modelName}" placeholder="機種名"></div>` : ""}
+      <div style="display:flex;gap:8px">
+        <div style="flex:1" class="field"><span class="field-label">現金投資(円)</span><input class="inp" type="number" id="sf_cash" value="${sf.cash}" placeholder="0"></div>
+        <div style="flex:1" class="field"><span class="field-label">貯玉投資(発)</span><input class="inp" type="number" id="sf_stock" value="${sf.stock}" placeholder="0"></div>
+        <div style="flex:1" class="field"><span class="field-label">出玉投資(発)</span><input class="inp" type="number" id="sf_win" value="${sf.win}" placeholder="0"></div>
+      </div>
+      <label style="display:flex;align-items:center;gap:6px;font-size:0.72rem;color:var(--muted);margin-bottom:12px">
+        <input type="checkbox" id="sf_cashstock" ${sf.cashAsStock?"checked":""}> 現金投資も貯玉ボーダーで計算する(貸出レートが特殊な店舗用)
+      </label>
+      <div style="display:flex;gap:8px">
+        <div style="flex:1" class="field"><span class="field-label">回転数</span><input class="inp" type="number" id="sf_rotations" value="${sf.rotations}" placeholder="0"></div>
+        <div style="flex:1" class="field"><span class="field-label">回収(発)</span><input class="inp" type="number" id="sf_payout" value="${sf.payoutBalls}" placeholder="0"></div>
+        <div style="flex:1" class="field"><span class="field-label">大当たり回数</span><input class="inp" type="number" id="sf_hits" value="${sf.hitCount}" placeholder="0"></div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <div style="flex:1" class="field"><span class="field-label">確変突入数</span><input class="inp" type="number" id="sf_kakuhen" value="${sf.kakuhenCount}" placeholder="0"></div>
+        <div style="flex:1" class="field"><span class="field-label">連チャン数</span><input class="inp" type="number" id="sf_renchan" value="${sf.renchanCount}" placeholder="0"></div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:4px">
+        <button class="btn full" id="sf_save">${state.editingSessionId?"更新する":"保存する"}</button>
+        <button class="btn ghost full" id="sf_cancel">キャンセル</button>
+      </div>
+    `;
+  }
+
+  let calHtml="";
+  if(!state.showSessionForm && state.viewMode==="calendar"){
+    const y=state.calYear, m=state.calMonth;
+    const first=new Date(y,m,1), startWd=first.getDay(), days=new Date(y,m+1,0).getDate();
+    const cells=[];
+    for(let i=0;i<startWd;i++) cells.push(null);
+    for(let d=1;d<=days;d++) cells.push(d);
+    const pad=n=>String(n).padStart(2,"0");
+    const monthKey=`${y}-${pad(m+1)}`;
+    let mp=0,me=0;
+    Object.entries(dayTotals).forEach(([d,v])=>{ if(d.slice(0,7)===monthKey){ mp+=v.profit; me+=v.expected; } });
+
+    calHtml = `
+      <div class="calnav">
+        <button id="cal_prev">‹</button>
+        <span class="calmonth">${y}年${m+1}月</span>
+        <button id="cal_next">›</button>
+      </div>
+      <div class="caltotals">
+        <div style="text-align:center"><div class="cap muted" style="font-size:0.62rem">今月の実際収支</div>${led(mp,"1rem")}</div>
+        <div style="text-align:center"><div class="cap muted" style="font-size:0.62rem">今月の期待収支</div>${led(me,"1rem")}</div>
+      </div>
+      <div class="calgrid">
+        ${["日","月","火","水","木","金","土"].map(w=>`<div class="wd">${w}</div>`).join("")}
+      </div>
+      <div class="calgrid" style="margin-top:3px">
+        ${cells.map((d)=>{
+          if(d===null) return `<div></div>`;
+          const ds=`${y}-${pad(m+1)}-${pad(d)}`;
+          const info=dayTotals[ds];
+          const sel = state.selectedDay===ds;
+          let cls="calcell"+(sel?" selected":info?(info.profit>=0?" pos":" neg"):"");
+          return `<button class="${cls}" data-day="${ds}"><span class="d">${d}</span>${info?`<span class="p" style="color:${sel?'#111225':(info.profit>=0?'var(--green)':'var(--red)')}">${info.profit>=0?"+":""}${Math.round(info.profit/1000)}k</span>`:""}</button>`;
+        }).join("")}
+      </div>
+      ${state.selectedDay ? `
+        <div class="daytotal">
+          ${dayTotals[state.selectedDay] ? (() => { const dt = dayTotals[state.selectedDay]; return `
+            <div class="muted" style="font-size:0.72rem;margin-bottom:4px">${state.selectedDay} の合計</div>
+            <div style="display:flex;justify-content:center;gap:20px;margin-bottom:10px">
+              <div><div class="muted" style="font-size:0.6rem">実際</div>${led(dt.profit,"1rem")}</div>
+              <div><div class="muted" style="font-size:0.6rem">期待</div>${led(dt.expected,"1rem")}</div>
+            </div>
+            <div style="display:flex;justify-content:center;gap:16px;margin-bottom:10px;flex-wrap:wrap">
+              <div><div class="muted" style="font-size:0.58rem">総投資</div><div class="orb" style="font-size:0.85rem;font-weight:700">${jpy(dt.investment)}</div></div>
+              <div><div class="muted" style="font-size:0.58rem">総回収</div><div class="orb" style="font-size:0.85rem;font-weight:700">${jpy(dt.payout)}</div></div>
+              <div><div class="muted" style="font-size:0.58rem">総回転数</div><div class="orb" style="font-size:0.85rem;font-weight:700">${dt.rotations.toLocaleString("ja-JP")}</div></div>
+              <div><div class="muted" style="font-size:0.58rem">総当たり</div><div class="orb" style="font-size:0.85rem;font-weight:700">${dt.hits.toLocaleString("ja-JP")}回</div></div>
+            </div>
+          `; })() : ""}
+          <button class="btn" id="addForDay">＋ ${state.selectedDay} に記録を追加</button>
+        </div>
+      ` : ""}
+    `;
+  }
+
+  const listHtml = displayList.length===0 && !state.showSessionForm
+    ? `<div class="empty">${state.selectedDay?"この日の記録はありません。":"まだ記録がありません。「追加」から最初のプレイを記録しましょう。"}</div>`
+    : displayList.map(s=>`
+      <div class="row">
+        <div>
+          <div style="font-size:0.85rem;font-weight:700">${s.date} ${s.modelName?`・${s.modelName}`:""}</div>
+          <div style="font-size:0.72rem" class="muted">${s.store?`${s.store} / `:""}${s.rotations}回転${s.hitCount?`(大当たり${s.hitCount}回${s.kakuhenCount?`・確変突入${s.kakuhenCount}回`:""}${s.renchanCount?`・連チャン${s.renchanCount}回`:""})`:""} / 投資${jpy(s.investment)} → 回収${jpy(s.payout)}${s.expectedProfit!=null?` / 期待${jpy(s.expectedProfit)}`:""}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span class="orb" style="font-weight:900;font-size:0.9rem;color:${s.profit>=0?'var(--green)':'var(--red)'}">${s.profit>=0?"+":""}${jpy(s.profit)}</span>
+          <button class="iconbtn" data-edit="${s.id}">✎</button>
+          <button class="iconbtn" data-del="${s.id}">🗑</button>
+        </div>
+      </div>
+    `).join("");
+
+  return `
+    <div style="padding-top:12px">
+      <div class="section">
+        <div class="section-head">
+          <h2 class="section-title">収支記録</h2>
+          ${!state.showSessionForm ? `
+            <div style="display:flex;gap:6px">
+              <button class="btn icon" id="toggleView">${state.viewMode==="calendar"?"☰":"📅"}</button>
+              <button class="btn" id="newSession">＋ 追加</button>
+            </div>
+          ` : ""}
+        </div>
+        ${formHtml}
+        ${calHtml}
+        ${listHtml}
+      </div>
+    </div>
+  `;
+}
+
+// ---------- MODELS ----------
+function renderModels(){
+  const modelsSorted = [...state.models].sort((a,b)=>a.borderStock-b.borderStock);
+  let formHtml="";
+  if(state.showModelForm){
+    const mf=state.mf;
+    formHtml=`
+      <div class="field"><span class="field-label">機種名</span><input class="inp" id="mf_name" value="${mf.name}" placeholder="例: 新台X"></div>
+      <div class="field"><span class="field-label">期待出玉(発、任意)</span><input class="inp" type="number" id="mf_avg" value="${mf.avgPayout}" placeholder="2500"></div>
+      <div style="display:flex;gap:8px">
+        <div style="flex:1" class="field"><span class="field-label">ボーダー(貯玉・出玉時)</span><input class="inp" type="number" step="0.1" id="mf_bstock" value="${mf.borderStock}" placeholder="20"></div>
+        <div style="flex:1" class="field"><span class="field-label">ボーダー(現金時)</span><input class="inp" type="number" step="0.1" id="mf_bcash" value="${mf.borderCash}" placeholder="21"></div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn full" id="mf_save">${state.editingModelId?"更新する":"保存する"}</button>
+        <button class="btn ghost full" id="mf_cancel">キャンセル</button>
+      </div>
+    `;
+  }
+  const listHtml = modelsSorted.map(m=>`
+    <div class="row">
+      <div>
+        <div style="font-size:0.85rem;font-weight:700">${m.name}</div>
+        <div style="font-size:0.72rem" class="muted">期待出玉${m.avgPayout||"-"}発 ・ ボーダー(貯玉${m.borderStock}/現金${m.borderCash})</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <button class="iconbtn" data-medit="${m.id}">✎</button>
+        <button class="iconbtn" data-mdel="${m.id}">🗑</button>
+      </div>
+    </div>
+  `).join("");
+
+  return `
+    <div style="padding-top:12px">
+      <div class="section">
+        <div class="section-head">
+          <h2 class="section-title">機種登録</h2>
+          ${!state.showModelForm ? `<button class="btn" id="newModel">＋ 追加</button>` : ""}
+        </div>
+        ${formHtml}
+        ${modelsSorted.length===0 && !state.showModelForm ? `<div class="empty">まだ機種がありません。「＋ 追加」から登録しましょう。</div>` : listHtml}
+      </div>
+    </div>
+  `;
+}
+
+// ---------- STORES ----------
+function renderStores(){
+  let formHtml="";
+  if(state.showStoreForm){
+    const stf=state.stf;
+    formHtml=`
+      <div class="field"><span class="field-label">店舗名</span><input class="inp" id="stf_name" value="${stf.name}" placeholder="例: ◯◯会館"></div>
+      <label style="display:flex;align-items:center;gap:6px;font-size:0.82rem;margin-bottom:12px">
+        <input type="checkbox" id="stf_equal" ${stf.isEqual?"checked":""}> 等価交換の店舗
+      </label>
+      <div style="display:flex;gap:8px">
+        <div style="flex:1" class="field"><span class="field-label">換金率(円/玉)</span><input class="inp" type="number" step="0.01" id="stf_rate" value="${stf.exchangeRate}" placeholder="4"></div>
+        <div style="flex:1" class="field"><span class="field-label">貯玉残高(発)</span><input class="inp" type="number" id="stf_stock" value="${stf.stockBalance}" placeholder="0"></div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn full" id="stf_save">${state.editingStoreId?"更新する":"保存する"}</button>
+        <button class="btn ghost full" id="stf_cancel">キャンセル</button>
+      </div>
+    `;
+  }
+  const listHtml = state.stores.map(st=>`
+    <div class="row">
+      <div>
+        <div style="font-size:0.85rem;font-weight:700">${st.name}</div>
+        <div style="font-size:0.72rem" class="muted">${st.isEqual?"等価":"非等価"} ・ 換金率${st.exchangeRate}円/玉 ・ 貯玉残高${(st.stockBalance||0).toLocaleString("ja-JP")}発</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <button class="iconbtn" data-stedit="${st.id}">✎</button>
+        <button class="iconbtn" data-stdel="${st.id}">🗑</button>
+      </div>
+    </div>
+  `).join("");
+
+  return `
+    <div style="padding-top:12px">
+      <div class="section">
+        <div class="section-head">
+          <h2 class="section-title">店舗登録</h2>
+          ${!state.showStoreForm ? `<button class="btn" id="newStore">＋ 追加</button>` : ""}
+        </div>
+        ${formHtml}
+        ${state.stores.length===0 && !state.showStoreForm ? `<div class="empty">まだ店舗がありません。</div>` : listHtml}
+      </div>
+    </div>
+  `;
+}
+
+// ---------- CALC ----------
+function calcResultHtml(){
+  const modelsSorted = [...state.models].sort((a,b)=>a.borderStock-b.borderStock);
+  const model = state.models.find(m=>m.id===state.calcModelId) || modelsSorted[0];
+  let resultHtml="";
+  if(model && state.calcRotations){
+    const cashYen = Number(state.calcCash)||0;
+    const nonCashYen = ((Number(state.calcStock)||0)+(Number(state.calcWin)||0))*RATE;
+    const investment = cashYen+nonCashYen;
+    if(investment>0){
+      const wb = weightedBorder(cashYen, nonCashYen, model, state.calcCashAsStock);
+      const expReturn = (1000*Number(state.calcRotations))/wb;
+      const expProfit = expReturn-investment;
+      resultHtml = `
+        <div class="section">
+          <h2 class="section-title" style="margin-bottom:12px">試算結果</h2>
+          <div style="text-align:center;padding:8px 0 18px">
+            <div class="cap muted" style="font-size:0.72rem;margin-bottom:6px">期待収支</div>
+            ${led(expProfit,"2.3rem")}
+          </div>
+          <div class="row"><span class="muted">使用ボーダー(加重平均)</span><span style="font-weight:700">${wb.toFixed(1)}回転/千円</span></div>
+          <div class="row"><span class="muted">期待回収額</span><span style="font-weight:700">${jpy(expReturn)}</span></div>
+          <div class="row"><span class="muted">投資額</span><span style="font-weight:700">${jpy(investment)}</span></div>
+          <div style="margin-top:10px;font-size:0.68rem;color:var(--muted);line-height:1.6">
+            ※ 期待回収額 = 1,000円 × 回転数 ÷ ボーダー。現金・貯玉・出玉が混在する場合はそれぞれの投資額(円換算)に応じてボーダーを加重平均しています。
+          </div>
+        </div>
+      `;
+    }
+  }
+  return resultHtml;
+}
+
+function renderCalc(){
+  const modelsSorted = [...state.models].sort((a,b)=>a.borderStock-b.borderStock);
+  if(!state.calcModelId && modelsSorted[0]) state.calcModelId = modelsSorted[0].id;
+
+  return `
+    <div style="padding-top:12px">
+      <div class="section">
+        <h2 class="section-title" style="margin-bottom:12px">期待値シミュレーター(ボーダー法)</h2>
+        <div class="field"><span class="field-label">機種</span>
+          <select class="inp" id="calc_model">
+            ${modelsSorted.map(m=>`<option value="${m.id}" ${state.calcModelId===m.id?"selected":""}>${m.name}</option>`).join("")}
+          </select>
+        </div>
+        <div style="display:flex;gap:8px">
+          <div style="flex:1" class="field"><span class="field-label">現金投資(円)</span><input class="inp" type="number" id="calc_cash" value="${state.calcCash}" placeholder="0"></div>
+          <div style="flex:1" class="field"><span class="field-label">貯玉投資(発)</span><input class="inp" type="number" id="calc_stock" value="${state.calcStock}" placeholder="0"></div>
+          <div style="flex:1" class="field"><span class="field-label">出玉投資(発)</span><input class="inp" type="number" id="calc_win" value="${state.calcWin}" placeholder="0"></div>
+        </div>
+        <label style="display:flex;align-items:center;gap:6px;font-size:0.72rem;color:var(--muted);margin-bottom:12px">
+          <input type="checkbox" id="calc_cashstock" ${state.calcCashAsStock?"checked":""}> 現金投資も貯玉ボーダーで計算する(貸出レートが特殊な店舗用)
+        </label>
+        <div class="field"><span class="field-label">回転数</span><input class="inp" type="number" id="calc_rot" value="${state.calcRotations}" placeholder="0"></div>
+      </div>
+      <div id="calcResultContainer">${calcResultHtml()}</div>
+      ${renderSimpleCalc()}
+    </div>
+  `;
+}
+
+function renderSimpleCalc(){
+  return `
+    <div class="section">
+      <div class="section-head">
+        <h2 class="section-title">汎用電卓</h2>
+        <button class="iconbtn" id="sc_toggle" style="font-size:0.75rem;color:var(--muted)">${state.simpleCalcShow?"閉じる":"開く"}</button>
+      </div>
+      ${state.simpleCalcShow ? `
+        <div class="calcdisp">${state.simpleDisplay}</div>
+        <div class="calckeys">
+          <button class="calckey accent" data-k="C">C</button>
+          <button class="calckey accent" data-k="⌫">⌫</button>
+          <button class="calckey accent" data-k="÷">÷</button>
+          <button class="calckey accent" data-k="×">×</button>
+          <button class="calckey" data-k="7">7</button>
+          <button class="calckey" data-k="8">8</button>
+          <button class="calckey" data-k="9">9</button>
+          <button class="calckey accent" data-k="-">-</button>
+          <button class="calckey" data-k="4">4</button>
+          <button class="calckey" data-k="5">5</button>
+          <button class="calckey" data-k="6">6</button>
+          <button class="calckey accent" data-k="+">+</button>
+          <button class="calckey" data-k="1">1</button>
+          <button class="calckey" data-k="2">2</button>
+          <button class="calckey" data-k="3">3</button>
+          <button class="calckey gold" data-k="=">=</button>
+          <button class="calckey wide" data-k="0">0</button>
+          <button class="calckey" data-k=".">.</button>
+        </div>
+      ` : ""}
+    </div>
+  `;
+}
+
+// ---------- events ----------
+function wireEvents(){
+  // nav
+  document.querySelectorAll("nav button").forEach(b=>{
+    b.onclick = ()=>{ state.tab=b.dataset.tab; render(); };
+  });
+
+  if(state.tab==="home"){
+    const exp = document.getElementById("expandChartBtn");
+    if(exp) exp.onclick=()=>{ state.chartExpanded=!state.chartExpanded; render(); };
+    const bt=document.getElementById("backupToggle"); if(bt) bt.onclick=()=>{ state.backupShow=!state.backupShow; render(); };
+    const bx=document.getElementById("backupText"); if(bx) bx.onclick=()=>{ bx.select(); };
+    const rt=document.getElementById("restoreText"); if(rt) rt.oninput=e=>{ state.restoreText=e.target.value; state.restoreStage=0; state.restoreMsg=""; };
+    const rb=document.getElementById("restoreBtn"); if(rb) rb.onclick=doRestore;
+  }
+
+  if(state.tab==="sessions"){
+    const nb=document.getElementById("newSession");
+    if(nb) nb.onclick=()=>{ resetSessionForm(); state.showSessionForm=true; render(); };
+    const tv=document.getElementById("toggleView");
+    if(tv) tv.onclick=()=>{ state.viewMode = state.viewMode==="calendar"?"list":"calendar"; render(); };
+
+    const d=document.getElementById("sf_date"); if(d) d.onchange=e=>state.sf.date=e.target.value;
+    const storeSel=document.getElementById("sf_store");
+    if(storeSel) storeSel.onchange=e=>{
+      if(e.target.value==="__new__"){ state.newStoreMode=true; state.sf.store=""; render(); }
+      else { state.sf.store=e.target.value; }
+    };
+    const storeNew=document.getElementById("sf_store_new");
+    if(storeNew) storeNew.oninput=e=>state.sf.store=e.target.value;
+    const storeBack=document.getElementById("sf_store_back");
+    if(storeBack) storeBack.onclick=()=>{ state.newStoreMode=false; render(); };
+    const modelSel=document.getElementById("sf_model");
+    if(modelSel) modelSel.onchange=e=>{ state.sf.modelId=e.target.value; render(); };
+    const modelName=document.getElementById("sf_modelname");
+    if(modelName) modelName.oninput=e=>state.sf.modelName=e.target.value;
+    const cash=document.getElementById("sf_cash"); if(cash) cash.oninput=e=>state.sf.cash=e.target.value;
+    const stock=document.getElementById("sf_stock"); if(stock) stock.oninput=e=>state.sf.stock=e.target.value;
+    const win=document.getElementById("sf_win"); if(win) win.oninput=e=>state.sf.win=e.target.value;
+    const cashstock=document.getElementById("sf_cashstock"); if(cashstock) cashstock.onchange=e=>state.sf.cashAsStock=e.target.checked;
+    const rot=document.getElementById("sf_rotations"); if(rot) rot.oninput=e=>state.sf.rotations=e.target.value;
+    const pay=document.getElementById("sf_payout"); if(pay) pay.oninput=e=>state.sf.payoutBalls=e.target.value;
+    const hits=document.getElementById("sf_hits"); if(hits) hits.oninput=e=>state.sf.hitCount=e.target.value;
+    const kakuhen=document.getElementById("sf_kakuhen"); if(kakuhen) kakuhen.oninput=e=>state.sf.kakuhenCount=e.target.value;
+    const renchan=document.getElementById("sf_renchan"); if(renchan) renchan.oninput=e=>state.sf.renchanCount=e.target.value;
+    const save=document.getElementById("sf_save"); if(save) save.onclick=saveSessionForm;
+    const cancel=document.getElementById("sf_cancel"); if(cancel) cancel.onclick=()=>{ resetSessionForm(); render(); };
+
+    document.querySelectorAll("[data-day]").forEach(el=>{
+      el.onclick=()=>{ const d=el.dataset.day; state.selectedDay = state.selectedDay===d?null:d; render(); };
+    });
+    const prev=document.getElementById("cal_prev"); if(prev) prev.onclick=()=>shiftMonth(-1);
+    const next=document.getElementById("cal_next"); if(next) next.onclick=()=>shiftMonth(1);
+    const addForDay=document.getElementById("addForDay");
+    if(addForDay) addForDay.onclick=()=>{
+      resetSessionForm();
+      state.sf.date = state.selectedDay;
+      state.showSessionForm = true;
+      render();
+    };
+
+    document.querySelectorAll("[data-edit]").forEach(el=>{
+      el.onclick=()=>startEditSession(el.dataset.edit);
+    });
+    document.querySelectorAll("[data-del]").forEach(el=>{
+      el.onclick=()=>{ saveSessions(state.sessions.filter(s=>s.id!==el.dataset.del)); };
+    });
+  }
+
+  if(state.tab==="models"){
+    const nb=document.getElementById("newModel");
+    if(nb) nb.onclick=()=>{ resetModelForm(); state.showModelForm=true; render(); };
+    const name=document.getElementById("mf_name"); if(name) name.oninput=e=>state.mf.name=e.target.value;
+    const avg=document.getElementById("mf_avg"); if(avg) avg.oninput=e=>state.mf.avgPayout=e.target.value;
+    const bs=document.getElementById("mf_bstock"); if(bs) bs.oninput=e=>state.mf.borderStock=e.target.value;
+    const bc=document.getElementById("mf_bcash"); if(bc) bc.oninput=e=>state.mf.borderCash=e.target.value;
+    const save=document.getElementById("mf_save"); if(save) save.onclick=saveModelForm;
+    const cancel=document.getElementById("mf_cancel"); if(cancel) cancel.onclick=()=>{ resetModelForm(); render(); };
+    document.querySelectorAll("[data-medit]").forEach(el=>{
+      el.onclick=()=>startEditModel(el.dataset.medit);
+    });
+    document.querySelectorAll("[data-mdel]").forEach(el=>{
+      el.onclick=()=>{ saveModels(state.models.filter(m=>m.id!==el.dataset.mdel)); };
+    });
+  }
+
+  if(state.tab==="stores"){
+    const nb=document.getElementById("newStore");
+    if(nb) nb.onclick=()=>{ resetStoreForm(); state.showStoreForm=true; render(); };
+    const name=document.getElementById("stf_name"); if(name) name.oninput=e=>state.stf.name=e.target.value;
+    const eq=document.getElementById("stf_equal"); if(eq) eq.onchange=e=>state.stf.isEqual=e.target.checked;
+    const rate=document.getElementById("stf_rate"); if(rate) rate.oninput=e=>state.stf.exchangeRate=e.target.value;
+    const stock=document.getElementById("stf_stock"); if(stock) stock.oninput=e=>state.stf.stockBalance=e.target.value;
+    const save=document.getElementById("stf_save"); if(save) save.onclick=saveStoreForm;
+    const cancel=document.getElementById("stf_cancel"); if(cancel) cancel.onclick=()=>{ resetStoreForm(); render(); };
+    document.querySelectorAll("[data-stedit]").forEach(el=>{
+      el.onclick=()=>startEditStore(el.dataset.stedit);
+    });
+    document.querySelectorAll("[data-stdel]").forEach(el=>{
+      el.onclick=()=>{ saveStores(state.stores.filter(st=>st.id!==el.dataset.stdel)); };
+    });
+  }
+
+  if(state.tab==="calc"){
+    const updateCalcResult=()=>{ const c=document.getElementById("calcResultContainer"); if(c) c.innerHTML=calcResultHtml(); };
+    const ms=document.getElementById("calc_model"); if(ms) ms.onchange=e=>{ state.calcModelId=e.target.value; updateCalcResult(); };
+    const c=document.getElementById("calc_cash"); if(c) c.oninput=e=>{ state.calcCash=e.target.value; updateCalcResult(); };
+    const s=document.getElementById("calc_stock"); if(s) s.oninput=e=>{ state.calcStock=e.target.value; updateCalcResult(); };
+    const w=document.getElementById("calc_win"); if(w) w.oninput=e=>{ state.calcWin=e.target.value; updateCalcResult(); };
+    const cs=document.getElementById("calc_cashstock"); if(cs) cs.onchange=e=>{ state.calcCashAsStock=e.target.checked; updateCalcResult(); };
+    const r=document.getElementById("calc_rot"); if(r) r.oninput=e=>{ state.calcRotations=e.target.value; updateCalcResult(); };
+    const sct=document.getElementById("sc_toggle"); if(sct) sct.onclick=()=>{ state.simpleCalcShow=!state.simpleCalcShow; render(); };
+    document.querySelectorAll("[data-k]").forEach(el=>{
+      el.onclick=()=>{ pressCalcKey(el.dataset.k); render(); };
+    });
+  }
+}
+
+function shiftMonth(delta){
+  let m=state.calMonth+delta, y=state.calYear;
+  if(m<0){m=11;y-=1;} else if(m>11){m=0;y+=1;}
+  state.calMonth=m; state.calYear=y; state.selectedDay=null;
+  render();
+}
+
+function resetSessionForm(){
+  state.editingSessionId=null;
+  state.sf={date:new Date().toISOString().slice(0,10),store:"",modelId:"",modelName:"",cash:"",stock:"",win:"",rotations:"",payoutBalls:"",hitCount:"",kakuhenCount:"",renchanCount:"",cashAsStock:false};
+  state.newStoreMode=false;
+  state.showSessionForm=false;
+}
+function saveSessionForm(){
+  const sf=state.sf;
+  if(!sf.rotations) return;
+  const trimmed=(sf.store||"").trim();
+  if(trimmed && !state.stores.some(st=>st.name===trimmed)){
+    state.stores=[...state.stores, {id:"st_"+Date.now(), name:trimmed, isEqual:true, exchangeRate:4, stockBalance:0}];
+  }
+  const data={
+    date:sf.date, store:sf.store, modelId:sf.modelId, modelName: sf.modelId? "": sf.modelName,
+    cash:Number(sf.cash)||0, stock:Number(sf.stock)||0, win:Number(sf.win)||0,
+    rotations:Number(sf.rotations)||0, payoutBalls:Number(sf.payoutBalls)||0, cashAsStock:!!sf.cashAsStock,
+    hitCount:Number(sf.hitCount)||0, kakuhenCount:Number(sf.kakuhenCount)||0, renchanCount:Number(sf.renchanCount)||0,
+  };
+  let next;
+  if(state.editingSessionId){
+    next = state.sessions.map(s=> s.id===state.editingSessionId ? Object.assign({},s,data) : s);
+  } else {
+    next = [...state.sessions, Object.assign({id:Date.now().toString()}, data)];
+  }
+  saveStores(state.stores);
+  resetSessionForm();
+  saveSessions(next);
+}
+function startEditSession(id){
+  const s=state.sessions.find(x=>x.id===id);
+  if(!s) return;
+  state.editingSessionId=id;
+  state.sf={
+    date:s.date, store:s.store||"", modelId:s.modelId||"", modelName: s.modelId? "": (s.modelName||""),
+    cash:s.cash?String(s.cash):"", stock:s.stock?String(s.stock):"", win:s.win?String(s.win):"",
+    rotations:s.rotations?String(s.rotations):"", payoutBalls:s.payoutBalls?String(s.payoutBalls):"",
+    cashAsStock:!!s.cashAsStock, hitCount:s.hitCount?String(s.hitCount):"", kakuhenCount:s.kakuhenCount?String(s.kakuhenCount):"", renchanCount:s.renchanCount?String(s.renchanCount):"",
+  };
+  state.newStoreMode = !!s.store && !state.stores.some(st=>st.name===s.store);
+  state.showSessionForm=true;
+  render();
+}
+
+function resetModelForm(){
+  state.editingModelId=null;
+  state.mf={name:"",avgPayout:"",borderStock:"",borderCash:""};
+  state.showModelForm=false;
+}
+function saveModelForm(){
+  const mf=state.mf;
+  if(!mf.name || !mf.borderStock) return;
+  const data={
+    name:mf.name, avgPayout:Number(mf.avgPayout)||0,
+    borderStock:Number(mf.borderStock), borderCash:Number(mf.borderCash)||(Number(mf.borderStock)+1),
+  };
+  let next;
+  if(state.editingModelId){
+    next = state.models.map(m=> m.id===state.editingModelId ? Object.assign({},m,data) : m);
+  } else {
+    next = [...state.models, Object.assign({id:Date.now().toString()}, data)];
+  }
+  resetModelForm();
+  saveModels(next);
+}
+function startEditModel(id){
+  const m=state.models.find(x=>x.id===id);
+  if(!m) return;
+  state.editingModelId=id;
+  state.mf={name:m.name, avgPayout:m.avgPayout?String(m.avgPayout):"", borderStock:m.borderStock!=null?String(m.borderStock):"", borderCash:m.borderCash!=null?String(m.borderCash):""};
+  state.showModelForm=true;
+  render();
+}
+
+function resetStoreForm(){
+  state.editingStoreId=null;
+  state.stf={name:"",isEqual:true,exchangeRate:"4",stockBalance:""};
+  state.showStoreForm=false;
+}
+function saveStoreForm(){
+  const stf=state.stf;
+  if(!stf.name) return;
+  const data={
+    name:stf.name, isEqual:!!stf.isEqual,
+    exchangeRate:Number(stf.exchangeRate)||4, stockBalance:Number(stf.stockBalance)||0,
+  };
+  let next;
+  if(state.editingStoreId){
+    next = state.stores.map(st=> st.id===state.editingStoreId ? Object.assign({},st,data) : st);
+  } else {
+    next = [...state.stores, Object.assign({id:"st_"+Date.now()}, data)];
+  }
+  resetStoreForm();
+  saveStores(next);
+}
+function startEditStore(id){
+  const st=state.stores.find(x=>x.id===id);
+  if(!st) return;
+  state.editingStoreId=id;
+  state.stf={name:st.name, isEqual: st.isEqual!==false, exchangeRate:String(st.exchangeRate!=null?st.exchangeRate:4), stockBalance:String(st.stockBalance||0)};
+  state.showStoreForm=true;
+  render();
+}
+
+function pressCalcKey(k){
+  if(k==="C"){ state.simpleDisplay="0"; state.simplePrev=null; state.simpleOp=null; state.simpleResetNext=false; return; }
+  if(k==="⌫"){ if(!state.simpleResetNext) state.simpleDisplay = state.simpleDisplay.length>1 ? state.simpleDisplay.slice(0,-1) : "0"; return; }
+  if(k==="="){
+    if(state.simplePrev==null || !state.simpleOp) return;
+    const r=computeCalc(state.simplePrev, state.simpleDisplay, state.simpleOp);
+    state.simpleDisplay=String(r); state.simplePrev=null; state.simpleOp=null; state.simpleResetNext=true;
+    return;
+  }
+  if(["+","-","×","÷"].includes(k)){
+    if(state.simplePrev!=null && state.simpleOp && !state.simpleResetNext){
+      const r=computeCalc(state.simplePrev, state.simpleDisplay, state.simpleOp);
+      state.simpleDisplay=String(r); state.simplePrev=String(r);
+    } else {
+      state.simplePrev=state.simpleDisplay;
+    }
+    state.simpleOp=k; state.simpleResetNext=true;
+    return;
+  }
+  if(k==="."){
+    if(state.simpleResetNext){ state.simpleDisplay="0."; state.simpleResetNext=false; return; }
+    if(!state.simpleDisplay.includes(".")) state.simpleDisplay+=".";
+    return;
+  }
+  // digit
+  if(state.simpleResetNext || state.simpleDisplay==="0"){ state.simpleDisplay=k; state.simpleResetNext=false; }
+  else state.simpleDisplay += k;
+}
+function computeCalc(a,b,o){
+  const x=parseFloat(a), y=parseFloat(b);
+  if(o==="+") return x+y;
+  if(o==="-") return x-y;
+  if(o==="×") return x*y;
+  if(o==="÷") return y===0?0:x/y;
+  return y;
+}
+
+render();
+initStorage();
+</script>
+</body>
+</html>
